@@ -1,9 +1,9 @@
 import EctoEnum
 
-defenum PlayerClass, :class, [
+defenum PlayerClass, :player_class, [
   :developer,
   :devops,
-  :test_engineer,
+  :quality_assurance,
   :administrator,
   :scrum_master,
   :product_owner
