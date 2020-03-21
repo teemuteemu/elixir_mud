@@ -10,5 +10,7 @@ defmodule Mud.Repo.Migrations.CreatePlayer do
       add :age, :integer
       add :class, PlayerClass.type()
     end
+
+    create unique_index(:player, [:name])
   end
 end

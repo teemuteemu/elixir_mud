@@ -1,39 +1,17 @@
 defmodule Mud.Player do
-  defmodule Class do
-    defmodule Skill do
-      defstruct skill: "", weight: 0
-    end
+  use Ecto.Schema
 
-    defstruct title: "", skills: []
-
-    def new(class, dev, ops, mgmt) do
-      %Mud.Player.Class{
-        title: class,
-        skills: [
-          %Mud.Player.Class.Skill{
-            skill: "Development",
-            weight: dev
-          },
-          %Mud.Player.Class.Skill{
-            skill: "Operations",
-            weight: ops
-          },
-          %Mud.Player.Class.Skill{
-            skill: "Management",
-            weight: mgmt
-          },
-        ]
-      }
-    end
+  schema "player" do
+    field :name, :string
+    field :password, :string
+    field :age, :integer
+    field :class, PlayerClass
   end
 
-  defstruct name: "", age: 0, class: nil
-
-  def new(name, age, class) do
-    %Mud.Player{
-      name: name,
-      age: age,
-      class: class,
-    }
+  def changeset(player, params \\ %{}) do
+    player
+    |> Ecto.Changeset.cast(params, [:name, :password, :age, :class])
+    |> Ecto.Changeset.validate_required([:name, :password, :age, :class])
+    |> Ecto.Changeset.unique_constraint(:name)
   end
 end
