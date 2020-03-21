@@ -7,6 +7,7 @@ defmodule Mud.Repo.Migrations.CreatePlayer do
     create table(:player) do
       add :name, :string
       add :password, :string
+      add :salt, :string
       add :age, :integer
       add :class, PlayerClass.type()
     end
