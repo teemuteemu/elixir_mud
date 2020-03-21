@@ -1,6 +1,28 @@
 defmodule Mud.Parser do
-  def eval(["signup", name, password, ageStr, class]) do
-    case Integer.parse(ageStr) do
+
+  # Actions for logged in user
+
+  def eval(["look", "around"], user) do
+    {:continue, "you take a good look around you..", user}
+  end
+
+  def eval(["look" | things], user) do
+    {:continue, "you look #{Enum.join(things, " ")}", user}
+  end
+
+  def eval(["exit"], _user) do
+    {:close}
+  end
+
+  def eval(_default, user) do
+    {:continue, "What do you mean #{user.name}?", user}
+  end
+
+
+  # Actions for an anonymous user
+
+  def eval(["signup", name, password, age_str, class]) do
+    case Integer.parse(age_str) do
       {age, _} ->
         case Mud.Player.sign_up(name, password, age, class) do
           {:ok, player} ->
@@ -18,28 +40,12 @@ defmodule Mud.Parser do
       {:ok, user} ->
         {:continue, "Logged in", user}
       {:error, _} ->
-        {:continue, "Usage: login <name> <password>"}
+        {:continue, "Login failed"}
     end
-  end
-
-  def eval(["look", "around"], user) do
-    {:continue, "you take a good look around you..", user}
-  end
-
-  def eval(["look" | things], user) do
-    {:continue, "you look #{Enum.join(things, " ")}", user}
-  end
-
-  def eval(["exit"], user) do
-    {:close}
   end
 
   def eval(["exit"]) do
     {:close}
-  end
-
-  def eval(_default, user) do
-    {:continue, "What do you mean #{user.name}?", user}
   end
 
   def eval(_default) do
