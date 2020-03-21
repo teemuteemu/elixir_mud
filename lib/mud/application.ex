@@ -7,8 +7,7 @@ defmodule Mud.Application do
 
   def start(_type, _args) do
     children = [
-      # Starts a worker by calling: Mud.Worker.start_link(arg)
-      # {Mud.Listener, 4000}
+      Mud.Repo,
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html
