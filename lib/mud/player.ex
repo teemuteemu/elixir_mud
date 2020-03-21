@@ -54,7 +54,7 @@ defmodule Mud.Player do
                    |> String.downcase
 
         if player.password == hashword do
-          player
+          {:ok, player}
         else
           {:error, :log_in_error}
         end

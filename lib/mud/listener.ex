@@ -4,28 +4,51 @@ defmodule Mud.Listener do
   defp read(socket) do
     case :gen_tcp.recv(socket, 0) do
       {:ok, data} ->
-        String.trim(data)
+        data
+        |> String.trim
+        |> String.split
       {:error, reason} ->
         Logger.error(reason)
     end
   end
 
-  defp serve(socket) do
+  defp serve(socket, message, user) do
+    :gen_tcp.send(socket, "#{message}\n#{user.name} > ")
+
+    socket
+    |> read
+    |> Mud.Parser.eval(user)
+    |> case do
+      {:continue, message, user} ->
+        serve(socket, message, user)
+      {:close} ->
+        :gen_tcp.close(socket)
+        Logger.info("Connection closed")
+    end
+  end
+
+  defp serve(socket, message) do
+    :gen_tcp.send(socket, "#{message}\n> ")
+
     socket
     |> read
     |> Mud.Parser.eval
-    |> Mud.Replier.print(socket)
     |> case do
-      :true -> serve(socket)
-      _ -> Logger.info("Connection closed")
+      {:continue, message} ->
+        serve(socket, message)
+      {:continue, message, user} ->
+        serve(socket, message, user)
+      {:close} ->
+        :gen_tcp.close(socket)
+        Logger.info("Connection closed")
     end
   end
 
   defp accept(socket) do
     {:ok, client} = :gen_tcp.accept(socket)
     Logger.info("New connection")
-    Task.start(fn -> serve(client) end)
-    # accept(socket)
+    Task.start(fn -> serve(client, "Welcome to the MUD!") end)
+    accept(socket)
   end
 
   def start(port) do
