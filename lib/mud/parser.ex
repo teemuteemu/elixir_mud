@@ -18,37 +18,27 @@ defmodule Mud.Parser do
     {:continue, "What do you mean #{user.name}?", user}
   end
 
-
   # Actions for an anonymous user
 
-  def eval(["signup", name, password, age_str, class]) do
-    case Integer.parse(age_str) do
-      {age, _} ->
-        case Mud.Player.sign_up(name, password, age, class) do
-          {:ok, player} ->
-            {:continue, "You have signed up succesfully with #{player.name}, you can now log in."}
-          {:error, _} ->
-            {:continue, "Usage: signup <name> <password> <age> <class>"}
-        end
-      :error ->
-        {:continue, "Age should be a number"}
+  def eval(["help"]) do
+    help_texts = Mud.Commands.anonymous_commands
+                 |> Map.keys()
+                 |> Enum.map(&(Mud.Commands.anonymous_commands[&1]["help"]))
+                 |> Enum.join(" ")
+                 |> IO.inspect
+    {:continue, "Available commands:\n\n#{help_texts}"}
+  end
+
+  def eval([command | params]) do
+    if Map.has_key?(Mud.Commands.anonymous_commands, command) do
+      try do
+        Mud.Commands.anonymous_commands[command]["command"].(params)
+      rescue
+        FunctionClauseError -> {:error, "bad command"}
+      end
+    else
+      {:continue, "eh?"}
     end
   end
 
-  def eval(["login", name, password]) do
-    case Mud.Player.log_in(name, password) do
-      {:ok, user} ->
-        {:continue, "Logged in", user}
-      {:error, _} ->
-        {:continue, "Login failed"}
-    end
-  end
-
-  def eval(["exit"]) do
-    {:close}
-  end
-
-  def eval(_default) do
-    {:continue, "eh?"}
-  end
 end
