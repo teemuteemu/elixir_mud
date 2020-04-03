@@ -25,11 +25,14 @@ defmodule Mud.Parser do
       try do
         Mud.Commands.anonymous_commands[command]["command"].(params)
       rescue
-        FunctionClauseError -> {:error, "bad command"}
+        FunctionClauseError -> {:continue, "Bad command"}
       end
     else
       {:continue, "eh?"}
     end
   end
 
+  def eval(_) do
+    {:continue, "eh?"}
+  end
 end
