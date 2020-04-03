@@ -14,12 +14,8 @@ defmodule Mud.AnonymousCommands do
         help
         """,
         "command" => fn([]) ->
-          help_texts = Mud.AnonymousCommands.commands
-                       |> Map.keys()
-                       |> Enum.map(&(Mud.AnonymousCommands.commands[&1]["help"]))
-                       |> Enum.join(" ")
-                       |> IO.inspect
-          {:continue, "Available commands:\n\n#{help_texts}"}
+          help_texts = Mud.Commands.help_str(Mud.AnonymousCommands.commands)
+          {:continue, help_texts}
         end
       },
       "signup" => %{

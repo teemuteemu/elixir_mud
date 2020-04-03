@@ -1,4 +1,13 @@
 defmodule Mud.Commands do
+  def help_str(commands) do
+    help_texts = commands
+                 |> Map.keys()
+                 |> Enum.map(&(commands[&1]["help"]))
+                 |> Enum.join(" ")
+
+    "Available commands:\n\n#{help_texts}"
+  end
+
   def commands do
     %{
       "exit" => %{
@@ -14,12 +23,8 @@ defmodule Mud.Commands do
         help
         """,
         "command" => fn([], user) ->
-          help_texts = Mud.Commands.commands
-                       |> Map.keys()
-                       |> Enum.map(&(Mud.Commands.commands[&1]["help"]))
-                       |> Enum.join(" ")
-                       |> IO.inspect
-          {:continue, "Available commands:\n\n#{help_texts}", user}
+          help_texts = help_str(Mud.Commands.commands)
+          {:continue, help_texts, user}
         end
       },
     }
