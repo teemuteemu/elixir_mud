@@ -9,9 +9,22 @@ defmodule Mud.Commands do
           {:close}
         end
       },
+      "help" => %{
+        "help" => """
+        help
+        """,
+        "command" => fn([]) ->
+          help_texts = Mud.Commands.anonymous_commands
+                       |> Map.keys()
+                       |> Enum.map(&(Mud.Commands.anonymous_commands[&1]["help"]))
+                       |> Enum.join(" ")
+                       |> IO.inspect
+          {:continue, "Available commands:\n\n#{help_texts}"}
+        end
+      },
       "signup" => %{
         "help" => """
-        singup <name> <password> <age> <class>
+        signup <name> <password> <age> <class>
         """,
         "command" => fn([name, password, age_str, class]) ->
           case Integer.parse(age_str) do

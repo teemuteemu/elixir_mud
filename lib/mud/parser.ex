@@ -18,16 +18,7 @@ defmodule Mud.Parser do
     {:continue, "What do you mean #{user.name}?", user}
   end
 
-  # Actions for an anonymous user
-
-  def eval(["help"]) do
-    help_texts = Mud.Commands.anonymous_commands
-                 |> Map.keys()
-                 |> Enum.map(&(Mud.Commands.anonymous_commands[&1]["help"]))
-                 |> Enum.join(" ")
-                 |> IO.inspect
-    {:continue, "Available commands:\n\n#{help_texts}"}
-  end
+  # Commands for an anonymous user
 
   def eval([command | params]) do
     if Map.has_key?(Mud.Commands.anonymous_commands, command) do
