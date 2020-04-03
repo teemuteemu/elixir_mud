@@ -1,6 +1,12 @@
 defmodule Mud.Listener do
   require Logger
 
+  use GenServer
+
+  def init(args) do
+    {:ok, args}
+  end
+
   defp read(socket) do
     case :gen_tcp.recv(socket, 0) do
       {:ok, data} ->
@@ -51,9 +57,13 @@ defmodule Mud.Listener do
     accept(socket)
   end
 
-  def start(port) do
-    case :gen_tcp.listen(port, [:binary, active: false, reuseaddr: false]) do
+  def start_link([]) do
+    port = System.get_env("PORT")
+           |> String.to_integer
+
+    case :gen_tcp.listen(port, [:binary, active: false, reuseaddr: true]) do
       {:ok, socket} ->
+        Logger.info("Listening :#{port}...")
         accept(socket)
       {:error, reason} ->
         Logger.error("Error listening #{reason}")

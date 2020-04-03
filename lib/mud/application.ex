@@ -8,6 +8,7 @@ defmodule Mud.Application do
   def start(_type, _args) do
     children = [
       Mud.Repo,
+      Mud.Listener
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html
