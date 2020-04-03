@@ -10,4 +10,10 @@ defmodule CommandTest do
     {:continue, reply} = Mud.Parser.eval(["help"])
     assert Regex.match?(~r/Available commands.*/, reply)
   end
+
+  test "logged in user should get help too" do
+    user = "user"
+    {:continue, reply, ^user} = Mud.Parser.eval(["help"], user)
+    assert Regex.match?(~r/Available commands.*/, reply)
+  end
 end
