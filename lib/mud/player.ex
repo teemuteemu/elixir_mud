@@ -16,6 +16,10 @@ defmodule Mud.Player do
     |> Ecto.Changeset.unique_constraint(:name)
   end
 
+  def format_user(user) do
+    "#{user.name} - #{user.class}"
+  end
+
   def get_classes() do
     Mud.Class
     |> Mud.Repo.all

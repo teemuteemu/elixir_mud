@@ -19,7 +19,7 @@ defmodule Mud.Listener do
   end
 
   defp serve(socket, message, user) do
-    :gen_tcp.send(socket, "#{message}\n#{user.name} > ")
+    :gen_tcp.send(socket, "#{message}\n#{Mud.Player.format_user(user)} > ")
 
     socket
     |> read
