@@ -7,6 +7,10 @@ defmodule Mud.Player do
     field :salt, :string
     field :age, :integer
     field :class, :string
+    field :level, :integer, default: 1
+    field :development, :integer, default: 0
+    field :operations, :integer, default: 0
+    field :management, :integer, default: 0
   end
 
   def changeset(player, params \\ %{}) do
@@ -17,7 +21,7 @@ defmodule Mud.Player do
   end
 
   def format_user(user) do
-    "#{user.name} - #{user.class}"
+    "#{user.name}: lvl: #{user.level} #{user.class} d: #{user.development} o: #{user.operations} m: #{user.management}"
   end
 
   def get_classes() do
