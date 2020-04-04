@@ -6,7 +6,7 @@ defmodule Mud.Player do
     field :password, :string
     field :salt, :string
     field :age, :integer
-    field :class, PlayerClass
+    field :class, :string
   end
 
   def changeset(player, params \\ %{}) do
@@ -16,22 +16,32 @@ defmodule Mud.Player do
     |> Ecto.Changeset.unique_constraint(:name)
   end
 
-  def sign_up(name, password, age, class) do
-    salt = :crypto.strong_rand_bytes(4)
-               |> Base.encode16
-               |> String.downcase
-    hashword = :crypto.hash(:sha256, salt <> password)
-               |> Base.encode16
-               |> String.downcase
-    player = %Mud.Player{name: name, password: hashword, salt: salt, age: age, class: class}
-               |> Mud.Player.changeset(%{})
-               |> Mud.Repo.insert
+  def get_classes() do
+    Mud.Class
+    |> Mud.Repo.all
+    |> Enum.map(&(Map.get(&1, :name)))
+  end
 
-    case player do
-      {:ok, player} ->
-        {:ok, player}
-      {:error, _} ->
-        {:error, :sign_up_error}
+  def sign_up(name, password, age, class) do
+    if Enum.member?(Mud.Player.get_classes, class) do
+      salt = :crypto.strong_rand_bytes(4)
+                 |> Base.encode16
+                 |> String.downcase
+      hashword = :crypto.hash(:sha256, salt <> password)
+                 |> Base.encode16
+                 |> String.downcase
+      player = %Mud.Player{name: name, password: hashword, salt: salt, age: age, class: class}
+                 |> Mud.Player.changeset(%{})
+                 |> Mud.Repo.insert
+
+      case player do
+        {:ok, player} ->
+          {:ok, player}
+        {:error, _} ->
+          {:error, "Sign up error"}
+      end
+    else
+        {:error, "Invalid class"}
     end
   end
 

@@ -6,10 +6,7 @@ defmodule Mud.Application do
   use Application
 
   def start(_type, _args) do
-    children = [
-      Mud.Repo,
-      Mud.Listener
-    ]
+    children = if (Mix.env() == :prod), do: [Mud.Repo, Mud.Listener], else: [Mud.Repo]
 
     # See https://hexdocs.pm/elixir/Supervisor.html
     # for other strategies and supported options

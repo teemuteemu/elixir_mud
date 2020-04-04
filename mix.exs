@@ -24,7 +24,6 @@ defmodule Mud.MixProject do
     [
       {:ecto_sql, "~> 3.0"},
       {:postgrex, ">= 0.0.0"},
-      {:ecto_enum, "~> 1.4"},
     ]
   end
 end

@@ -3,7 +3,6 @@ defmodule Mud.Class do
 
   schema "class" do
     field :name, :string
-    field :class, PlayerClass
     field :development, :integer, default: 0
     field :operations, :integer, default: 0
     field :management, :integer, default: 0

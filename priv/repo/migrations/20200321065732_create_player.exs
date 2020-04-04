@@ -2,14 +2,12 @@ defmodule Mud.Repo.Migrations.CreatePlayer do
   use Ecto.Migration
 
   def change do
-    PlayerClass.create_type
-
     create table(:player) do
       add :name, :string
       add :password, :string
       add :salt, :string
       add :age, :integer
-      add :class, PlayerClass.type()
+      add :class, :string
     end
 
     create unique_index(:player, [:name])

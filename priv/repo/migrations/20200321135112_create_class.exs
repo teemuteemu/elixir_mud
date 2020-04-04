@@ -4,7 +4,6 @@ defmodule Mud.Repo.Migrations.CreateClass do
   def change do
     create table(:class) do
       add :name, :string
-      add :class, PlayerClass.type()
       add :development, :integer
       add :operations, :integer
       add :management, :integer
